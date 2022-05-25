@@ -5,9 +5,9 @@
 				<router-link :to="{ path: '/' }" tag="span" style="cursor: pointer">
 				{{ appTitle }}
 				</router-link>
-				<v-app-bar-nav-icon style="margin-left:4px !important">
+				<v-app-bar-nav-icon>
 				<router-link :to="{ path: '/' }">
-					<v-img src="./logoajr.png" align-center center height="60px" width="60px"/>
+					<v-img src="./logoajr.png" align-center center height="50px" width="50px"/>
 				</router-link>
 				</v-app-bar-nav-icon>
 			</v-toolbar-title>
@@ -248,13 +248,14 @@ export default {
 		logout(){
 			localStorage.clear();
 			location.href="/login";
-		}
+		},
 	},
 	mounted(){
 		if(localStorage.getItem('auth') != null){
 			this.auth = localStorage.getItem('auth');
-			if(localStorage.getItem('auth') == "employee")
+			if(localStorage.getItem('auth') == "employee"){
 				this.role = localStorage.getItem('role');
+			}
 		}else{
 			this.auth = '';
 			this.role = '';

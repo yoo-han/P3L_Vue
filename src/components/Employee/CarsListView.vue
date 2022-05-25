@@ -14,6 +14,16 @@
                             </v-card-title>
                             <v-data-table v-model="selected" :headers="headers" :header-props="{ sortIcon: null }" :height="600" :items="cars" item-key="id_mobil"
                                 :search="search" :single-select="true" show-select>
+                                <template v-slot:[`item.alert_kontrak`]="{ item }">
+                                    <label v-if="item.alert_kontrak != 'dekatKontrak'">
+                                    <v-icon color="green darken-4" @click="snackbar_kontrakMobilAman=true">mdi-check-circle</v-icon>
+                                    </label>
+                                    <template v-for="items in carscontract">
+                                        <label :key="items" v-if="item.id_mobil == items.id_mobil" style="height: 40px;">
+                                        <v-icon color="red darken-4" @click="snackbar_kontrakMobilHabis=true">mdi-alert</v-icon>
+                                        </label>
+                                    </template>
+                                </template>
                                 <template v-slot:[`item.foto_mobil`]="{ item }">
                                     <div class="p-2">
                                     <v-avatar size="75">
@@ -66,9 +76,8 @@
                         <v-text-field v-model="form.warna_mobil" label="Warna Mobil" required></v-text-field>
                         <v-text-field v-model="form.kapasitas_penumpang" label="Kapasitas Penumpang" required></v-text-field>
                         <v-text-field v-model="form.fasilitas" label="Fasilitas" required></v-text-field>
-                        <v-select :items="kategoriAset" v-model="form.kategori_aset" label="Kategori Aset" item-value="value" item-text="text" required>
-                        </v-select>
-                        <v-select v-if="form.kategori_aset == 'Mitra'" :items="mitraList" v-model="form.id_mitra" item-value="id_mitra" item-text="nama_pemilik" label="Mitra" required clearable return-object></v-select>
+                        <v-select :items="kategoriAset" v-model="form.kategori_aset" label="Kategori Aset" item-value="value" item-text="text" required></v-select>
+                        <v-select v-if="form.kategori_aset == 'Mitra'" :items="mitraList" v-model="form.id_mitra" item-value="id_mitra" item-text="nama_pemilik" label="Mitra" required clearable></v-select>
                         <v-text-field v-model="form.plat_nomor" label="Plat Nomor" required></v-text-field>
                         <v-text-field v-model="form.nomor_stnk" label="No. STNK" required></v-text-field>
                         <v-text-field v-model="form.harga_sewa" label="Harga Sewa" required></v-text-field>
@@ -107,6 +116,13 @@
 
         <v-snackbar v-model="snackbar" :color="color" timeout="2000" bottom> {{ error_message }}</v-snackbar>
     
+        <v-snackbar v-model="snackbar_kontrakMobilHabis" color="red" timeout="2000">
+            <p class="text-center font-weight-bold">Periode kontrak akan habis</p>
+        </v-snackbar>
+
+        <v-snackbar v-model="snackbar_kontrakMobilAman" color="green" timeout="2000">
+            <p class="text-center font-weight-bold">Periode kontrak masih lama</p>
+        </v-snackbar>
     </v-main>
 </template>
 
@@ -152,6 +168,11 @@
                 color: '',
                 search: null,
                 headers: [
+                    {
+                        text: "Masa Kontrak",
+                        value: "alert_kontrak",
+                        align: "center",
+                    },
                     {
                         text: "Nama",
                         sortable: true,
@@ -242,6 +263,7 @@
                 ],
                 car: new FormData,
                 cars: [],
+                carscontract: [],
                 singleSelect: true,
                 selected: [],
                 dialog: false,
@@ -294,6 +316,8 @@
                 ],
                 image: [],
                 imageUrl: '',
+                snackbar_kontrakMobilAman: false,
+                snackbar_kontrakMobilHabis: false,
             };
         },
         methods: {
@@ -301,6 +325,24 @@
                 var url = this.$api + '/mobil';
                 this.$http.get(url).then(response => {
                     this.cars = response.data.data;
+                })
+            },
+
+            readContract() {
+                var url = this.$api + '/contract';
+                this.$http.get(url).then(response => {
+                    this.carscontract = response.data.data;
+                    
+                    for(var i=0; i < this.carscontract.length; i++)
+                    {
+                        for(var j=0; j < this.cars.length; j++)
+                        {
+                            if(this.carscontract[i].id_mobil == this.cars[j].id_mobil)
+                            {
+                                this.cars[j].alert_kontrak = "dekatKontrak";
+                            }
+                        }
+                    }
                 })
             },
 
@@ -344,6 +386,7 @@
 
             save() {
                 if(this.formTitle == 'Tambah'){
+                    if(this.form.kategori_aset == 'Mitra')
                     this.car.append('id_mitra', this.form.id_mitra);
                     this.car.append('nama_mobil', this.form.nama_mobil);
                     this.car.append('tipe_mobil', this.form.tipe_mobil);
@@ -382,7 +425,10 @@
                     });
                 }else{
                     var newCar = new FormData;
-                    newCar.append('id_mitra', this.form.id_mitra ?? '');
+                    if(this.form.kategori_aset == 'Mitra')
+                    newCar.append('id_mitra', this.form.id_mitra);
+                    else
+                    newCar.append('id_mitra', '');
                     newCar.append('nama_mobil', this.form.nama_mobil);
                     newCar.append('tipe_mobil', this.form.tipe_mobil);
                     newCar.append('jenis_transmisi', this.form.jenis_transmisi);
@@ -518,6 +564,7 @@
         },
         mounted() {
             this.readData();
+            this.readContract();
             this.getMitraList();
         },
     };

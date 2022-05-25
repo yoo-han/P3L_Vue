@@ -48,9 +48,10 @@
                 </v-card-title>
                 <v-card-text>
                     <v-container>
-                        <v-select :items="pegawaiList" v-model="form.id_pegawai" item-value="id_pegawai" item-text="nama_pegawai" label="Pegawai" required></v-select>
-                        <v-select :items="shiftList" v-model="form.id_shift" item-value="id_shift" item-text="nama_shift" label="Shift" required></v-select>
-                        <v-text-field v-model="form.hari" label="Hari" required></v-text-field>
+                        <v-select v-if="formTitle == 'Tambah'" :items="pegawaiList" v-model="form.id_pegawai" item-value="id_pegawai" :item-text="item => item.nama_pegawai +' - '+ item.jabatan_pegawai" label="Pegawai" required></v-select>
+                        <v-select v-else :items="pegawaiList" v-model="form.id_pegawai" item-value="id_pegawai" :item-text="item => item.nama_pegawai +' - '+ item.jabatan_pegawai" label="Pegawai" required disabled></v-select>
+                        <v-select :items="shiftList" v-model="form.id_shift" item-value="id_shift" :item-text="item => item.nama_shift +' ('+ item.jam_kerja_mulai +' - '+ item.jam_kerja_selesai +')'" label="Shift" required></v-select>
+                        <v-select :items="hariList" v-model="form.hari" item-value="value" item-text="text" label="Hari" required></v-select>
                     </v-container>
                 </v-card-text>
                 <v-card-actions>
@@ -130,13 +131,30 @@
                         align:"center",
                     },
                     {
-                        text: "Shift",
-                        value: "get_shift.nama_shift",
+                        text: "Jabatan",
+                        sortable: true,
+                        value: "get_pegawai.jabatan_pegawai",
                         align:"center",
                     },
                     {
                         text: "Hari",
                         value: "hari",
+                        align:"center",
+                    },
+                    {
+                        text: "Shift",
+                        sortable: true,
+                        value: "get_shift.nama_shift",
+                        align:"center",
+                    },
+                    {
+                        text: "Jam Mulai",
+                        value: "get_shift.jam_kerja_mulai",
+                        align:"center",
+                    },
+                    {
+                        text: "Jam Selesai",
+                        value: "get_shift.jam_kerja_selesai",
                         align:"center",
                     },
                 ],
@@ -154,7 +172,37 @@
                 },
                 dialogDelete: false,
                 pegawaiList: [],
-                shiftList: []
+                shiftList: [],
+                hariList: [
+                    {
+                        value: "Senin",
+                        text: "Senin"
+                    },
+                    {
+                        value: "Selasa",
+                        text: "Selasa"
+                    },
+                    {
+                        value: "Rabu",
+                        text: "Rabu"
+                    },
+                    {
+                        value: "Kamis",
+                        text: "Kamis"
+                    },
+                    {
+                        value: "Jumat",
+                        text: "Jumat"
+                    },
+                    {
+                        value: "Sabtu",
+                        text: "Sabtu"
+                    },
+                    {
+                        value: "Minggu",
+                        text: "Minggu"
+                    },
+                ],
             };
         },
         methods: {
@@ -295,7 +343,7 @@
             },
 
             getPegawaiList() {
-                var url = this.$api + '/pegawai';
+                var url = this.$api + '/showWithoutManager';
                 this.$http.get(url).then(response => {
                     this.pegawaiList = response.data.data;
                 })

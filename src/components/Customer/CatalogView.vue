@@ -6,43 +6,66 @@
                 <v-card class="pt-10" min-height="100vh">
                     <h3 class="mt-10 my-5 text-center subTitle" style="font-weight:bold; font-size:40pt">Daftar Mobil
                     </h3>
-                    <v-row justify="center">
-                        <v-col cols="12" class="px-10">
-                            <v-card-title>
-                                <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" single-line
-                                    hide-details></v-text-field>
-                            </v-card-title>
-                            <v-data-table v-model="selected" :headers="headers" :header-props="{ sortIcon: null }" :height="600" :items="cars" item-key="id_mobil"
-                                :search="search" :single-select="true" show-select>
-                                <template v-slot:[`item.foto_mobil`]="{ item }">
-                                    <div class="p-2">
-                                    <v-avatar size="75">
-                                        <v-img :src="$baseURL+'storage/'+item.foto_mobil" max-width="100px"></v-img>
-                                    </v-avatar>
-                                    </div>
-                                </template>
-                            </v-data-table>
-                        </v-col>
-                        <!-- <v-col cols="3" style="padding-top:80px;">
-                            <div style="margin:50px 0px 0px 0px;">
-                                <v-btn class="mb-4" style="width:60px; height:60px;" color="green darken-2" @click="addCar">
-                                    <v-icon x-large color="white"> mdi-plus </v-icon>
+                    <v-row class="justify-center">
+                    <v-col 
+                    cols="5"
+                    v-for="item in cars"
+                    :key="item.title"
+                    >
+                        <v-card class="mt-10 pb-1 px-2 mx-10 subTitle" style="background-color: #FFFfff"> 
+                            <v-row class="justify-center mb-5">
+                                <v-img
+                                    :src="$baseURL+'storage/'+item.foto_mobil"
+                                    contain
+                                    height="300"
+                                    max-width="400"
+                                ></v-img>
+                            </v-row>
+                            <v-row class="mx-5 justify-center" align="center">
+                                <p style="font-size:25pt">{{ item.nama_mobil }}</p>
+                            </v-row>
+                            <v-divider></v-divider>
+                            <p class="my-4" style="font-size:15pt; font-weight:normal;">Spesifikasi Kendaraan</p>
+                            <v-row align="center" class="mx-2 my-4 px-10" style="font-size:15pt; font-weight:normal">
+                                <div align="left">
+                                    <table style="font-size:13pt">
+                                        <tr>
+                                            <th style="font-weight:bold; width:50%;"><v-icon>mdi-car</v-icon>Tipe Mobil</th>
+                                            <td style="font-weight:normal; width:50%; text-align:center">{{item.tipe_mobil}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th style="font-weight:bold; width:50%"><v-icon>mdi-steering</v-icon>Jenis Transmisi</th>
+                                            <td v-if="item.jenis_transmisi == 'AT'" style="font-weight:normal; width:50%; text-align:center">Automatic (AT)</td>
+                                            <td v-else-if="item.jenis_transmisi == 'MT'" style="font-weight:normal; width:50%; text-align:center">Manual (MT)</td>
+                                            <td v-else-if="item.jenis_transmisi == 'CVT'" style="font-weight:normal; width:50%; text-align:center">Continous Variable (CVT)</td>
+                                        </tr>
+                                        <tr>
+                                            <th style="font-weight:bold; width:50%"><v-icon>mdi-format-color-fill</v-icon>Warna</th>
+                                            <td style="font-weight:normal; width:50%; text-align:center">{{item.warna_mobil}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th style="font-weight:bold; width:50%"><v-icon>mdi-fuel</v-icon>Bahan Bakar</th>
+                                            <td style="font-weight:normal; width:50%; text-align:center">{{item.jenis_bahan_bakar}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th style="font-weight:bold; width:50%"><v-icon>mdi-car-connected</v-icon>Fasilitas</th>
+                                            <td style="font-weight:normal; width:50%; text-align:center">{{item.fasilitas}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </v-row>
+                            <v-divider></v-divider>
+                            <v-row align="center" class="mx-2 my-4 px-10">
+                                <h5>Rp{{ item.harga_sewa }},00</h5>
+                                <v-spacer></v-spacer>
+                                <v-btn @click="addReservation(item)" color="blue darken-1" class="white--text" style="width: 200px">
+                                <v-icon>mdi-plus</v-icon>
+                                Pesan
                                 </v-btn>
-                            </div>
-                            <v-spacer />
-                            <div style="margin:50px 0px 0px 0px;">
-                                <v-btn class="mb-4" style="width:60px; height:60px;" color="grey darken-2" @click="updateCar(selected)">
-                                    <v-icon x-large color="white"> mdi-pencil </v-icon>
-                                </v-btn>
-                            </div>
-                            <v-spacer />
-                            <div style="margin:50px 0px 0px 0px;">
-                                <v-btn class="mb-4" style="width:60px; height:60px;" color="red darken-2" @click="deleteCar(selected)">
-                                    <v-icon x-large color="white"> mdi-delete </v-icon>
-                                </v-btn>
-                            </div>
-                        </v-col> -->
-                    </v-row>
+                            </v-row>
+                        </v-card>
+                    </v-col>
+                </v-row>
                 </v-card>
             </v-col>
             <v-col cols="1" style="background:#251e3e" />
@@ -51,54 +74,26 @@
         <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
                 <v-card-title>
-                    <span class="headline">{{ formTitle }} Car</span>
+                    <span class="headline">{{ formTitle }} Reservation</span>
                 </v-card-title>
                 <v-card-text>
                     <v-container>
-                        <v-text-field v-model="form.nama_mobil" label="Nama Mobil" required></v-text-field>
-                        <v-select :items="tipeMobil" v-model="form.tipe_mobil" label="Tipe Mobil" item-value="value" item-text="text" required>
-                        </v-select>
-                        <v-select :items="jenisTransmisi" v-model="form.jenis_transmisi" label="Jenis Transmisi" item-value="value" item-text="text" required>
-                        </v-select>
-                        <v-select :items="jenisBahanBakar" v-model="form.jenis_bahan_bakar" label="Jenis Bahan Bakar" item-value="value" item-text="text" required>
-                        </v-select>
-                        <v-text-field v-model="form.volume_bahan_bakar" label="Volume Bahan Bakar" required></v-text-field>
-                        <v-text-field v-model="form.warna_mobil" label="Warna Mobil" required></v-text-field>
-                        <v-text-field v-model="form.kapasitas_penumpang" label="Kapasitas Penumpang" required></v-text-field>
-                        <v-text-field v-model="form.fasilitas" label="Fasilitas" required></v-text-field>
-                        <v-select :items="kategoriAset" v-model="form.kategori_aset" label="Kategori Aset" item-value="value" item-text="text" required>
-                        </v-select>
-                        <v-select v-if="form.kategori_aset == 'Mitra'" :items="mitraList" v-model="form.id_mitra" item-value="id_mitra" item-text="nama_pemilik" label="Mitra" required clearable return-object></v-select>
-                        <v-text-field v-model="form.plat_nomor" label="Plat Nomor" required></v-text-field>
-                        <v-text-field v-model="form.nomor_stnk" label="No. STNK" required></v-text-field>
-                        <v-text-field v-model="form.harga_sewa" label="Harga Sewa" required></v-text-field>
-                        <v-file-input @change="onFileChange" prepend-icon="mdi-camera" label="Upload Foto Mobil" id="fileFotoMobil" ref="fileFotoMobil" required></v-file-input>
-                        <p>Preview Foto</p>
-                        <v-img class="mb-5" :src="imageUrl" style="border: 1px dashed #ccc; min-height: 250px"></v-img>
-                        <v-text-field type="date" v-model="form.tanggal_terakhir_servis" label="Servis Terakhir" clearable required></v-text-field>
-                        <v-text-field v-if="formTitle == 'Ubah'" v-model="form.total_peminjaman" label="Total Peminjaman" required></v-text-field>
+                        <v-text-field v-model="selected_car.nama_mobil" label="Nama Mobil" disabled required></v-text-field>
+                        <v-text-field type="datetime-local" v-model="form.tanggal_mulai" label="Tanggal Penyewaan Mulai" required @change="startDateChange"></v-text-field>
+                        <v-text-field type="datetime-local" v-model="form.tanggal_selesai" label="Tanggal Penyewaan Selesai" required @change="endDateChange"></v-text-field>
+                        <v-select v-if="datediff >= 1" :items="jenisReservasi" v-model="form.jenis_reservasi" label="Jenis Reservasi" item-value="value" item-text="text" required @change="countSubtotalPeminjaman"></v-select>
+                        <v-text-field v-if="form.jenis_reservasi == 'Penyewaan Mobil'" v-model="form.no_sim" label="Nomor Sim" required></v-text-field>
+                        <v-text-field v-if="form.jenis_reservasi == 'Penyewaan Mobil dan Driver'" v-model="subTotalDriver" label="Tarif Driver" required disabled></v-text-field>
+                        <v-select :items="availablePromos" v-model="form.id_promo" label="Promo" item-value="id_promo" item-text="kode_promo" required @change="countSubtotalPromo"></v-select>
+                        <v-select :items="metodePembayaran" v-model="form.metode_pembayaran" label="Metode Pembayaran" item-value="value" item-text="text" required></v-select>
+                        <p class="subTitle text-right" style="font-size:15pt">Total</p>
+                        <p class="subTitle text-right">Rp{{subTotalUsingPromo}}</p>
                     </v-container>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="red darken-4" text @click="cancel"> Cancel </v-btn>
-                    <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-
-        <v-dialog v-model="dialogDelete" persistent max-width="600px">
-            <v-card>
-                <v-card-title>
-                    <span class="headline">Delete Car</span>
-                </v-card-title>
-                <v-card-text>
-                    <p>Apakah data ini ingin dihapus?</p>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="cancelDelete"> Cancel </v-btn>
-                    <v-btn color="red darken-4" text @click="deleteData"> Delete </v-btn>
+                    <v-btn v-if="datediff >= 1" color="blue darken-1" text @click="save"> Save </v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -137,9 +132,59 @@
     ::v-deep .v-data-table-header th span{
         color: #ffffff;
     }
+
+    .responsive-table {
+        width: 100%;
+        text-align: center;
+        @media 
+        only screen and (max-width: 760px) {
+
+            table, thead, tbody, th, td, tr { 
+                display: block; 
+            }
+
+            thead tr { 
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                padding: 2rem 0;
+            }
+
+            
+            td[data-label] {
+                position: relative;
+                padding-left: 40%; 
+                display: flex;
+                align-items: center;
+
+                &:before { 
+                    content: attr(data-label);
+                    position: absolute;
+                    top: 0.5rem;
+                    left: 0;
+                    width: 35%; 
+                    padding-right: 10px; 
+                    white-space: nowrap;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
+    table, th, td {
+        border: 1px solid #251e3e;
+        border-collapse: collapse;
+        font-family: 'Roboto', sans-serif;
+        color: #251e3e;
+    }
+
 </style>
 
 <script>
+    import moment from "moment";
     export default {
         name: "List",
         data() {
@@ -149,143 +194,49 @@
                 error_message: '',
                 color: '',
                 search: null,
-                headers: [
-                    {
-                        text: "Nama",
-                        sortable: true,
-                        value: "nama_mobil",
-                        align:"center",
-                    },
-                    {
-                        text: "Tipe",
-                        value: "tipe_mobil",
-                        align:"center",
-                    },
-                    {
-                        text: "Transmisi",
-                        value: "jenis_transmisi",
-                        align:"center",
-                    },
-                    {
-                        text: "Bahan Bakar",
-                        value: "jenis_bahan_bakar",
-                        align:"center",
-                        
-                    },
-                    {
-                        text: "Volume Bahan Bakar",
-                        value: "volume_bahan_bakar",
-                        align:"center",
-                    },
-                    {
-                        text: "Warna",
-                        value: "warna_mobil",
-                        align:"center",
-                    },
-                    {
-                        text: "Kapasitas Penumpang",
-                        value: "kapasitas_penumpang",
-                        align:"center",
-                    },
-                    {
-                        text: "Fasilitas",
-                        value: "fasilitas",
-                        align:"center",
-                    },
-                    {
-                        text: "Kategori Aset",
-                        value: "kategori_aset",
-                        align:"center",
-                    },
-                    {
-                        text: "Mitra",
-                        value: "get_mitra.nama_pemilik",
-                        align:"center",
-                    },
-                    {
-                        text: "Plat Nomor",
-                        value: "plat_nomor",
-                        align:"center",
-                    },
-                    {
-                        text: "No. STNK",
-                        value: "nomor_stnk",
-                        align:"center",
-                    },
-                    {
-                        text: "Harga",
-                        value: "harga_sewa",
-                        align:"center",
-                    },
-                    {
-                        text: "Foto",
-                        value: "foto_mobil",
-                        align:"center",
-                    },
-                    {
-                        text: "Total Peminjaman",
-                        value: "total_peminjaman",
-                        align:"center",
-                    },
-                    {
-                        text: "Servis Terakhir",
-                        value: "tanggal_terakhir_servis",
-                        align:"center",
-                    },
-                    {
-                        text: "Status",
-                        value: "status_mobil",
-                        align:"center",
-                    },
-                ],
-                car: new FormData,
+                selected_index: -1,
+                selected_car: [],
                 cars: [],
-                singleSelect: true,
-                selected: [],
+                reservation: new FormData,
                 dialog: false,
                 formTitle:'',
                 form:{
-                    id_mobil: '',
-                    id_mitra: '',
-                    nama_mobil: '',
-                    tipe_mobil: '',
-                    jenis_transmisi: '',
-                    jenis_bahan_bakar: '',
-                    volume_bahan_bakar: '',
-                    warna_mobil: '',
-                    kapasitas_penumpang: '',
-                    fasilitas: '',
-                    kategori_aset: '',
-                    plat_nomor: '',
-                    nomor_stnk: '',
-                    harga_sewa: '',
-                    foto_mobil: '',
-                    total_peminjaman: '',
-                    tanggal_terakhir_servis: '',
+                    id_customer: '',
+                    id_mobil: '', 
+                    id_pegawai: '',
+                    id_promo: '',
+                    id_driver: '',
+                    tanggal_transaksi: '',
+                    tanggal_mulai: '',
+                    tanggal_selesai: '',
+                    jenis_reservasi: '',
+                    no_sim: '',
+                    tarif_driver: '',
+                    metode_pembayaran: '',
+                    bukti_transfer: '',
+                    total_pembayaran: '',
+                    tanggal_kembali: '',
+                    denda: '',
+                    rating_driver: '',
+                    status_reservasi: '',
                 },
-                dialogDelete: false,
-                mitraList: [],
-                tipeMobil: [
-                    {value: "Sedan", text: "Sedan"},
-                    {value: "City Car", text: "City Car"},
-                    {value: "SUV", text: "SUV"},
-                    {value: "MPV", text: "MPV"},
+                jenisReservasi: [
+                    {value: 'Penyewaan Mobil', text: 'Penyewaan Tanpa Driver'},
+                    {value: 'Penyewaan Mobil dan Driver', text: 'Penyewaan Dengan Driver'},
                 ],
-                jenisTransmisi: [
-                    {value: "AT", text: "AT"},
-                    {value: "MT", text: "MT"},
-                    {value: "CVT", text: "CVT"},
+                metodePembayaran: [
+                    {value: 'Transfer Bank', text: 'Transfer Bank'},
+                    {value: 'Tunai', text: 'Tunai'},
                 ],
-                jenisBahanBakar: [
-                    {value: "Pertamax", text: "Pertamax"},
-                    {value: "Pertalite", text: "Pertalite"},
-                    {value: "Solar", text: "Solar"},
-                ],
-                kategoriAset: [
-                    {value: "Mitra", text: "Mitra"},
-                    {value: "Perusahaan", text: "Perusahaan"},
-                ],
-                image: [],
+                availablePromos: [],
+                selectedPromo: [],
+                start_date: null,
+                end_date: null,
+                datediff: 0,
+                subTotalMobil: 0,
+                subTotalDriver: 0,
+                subTotal: 0,
+                subTotalUsingPromo: 0,
                 imageUrl: '',
             };
         },
@@ -297,171 +248,51 @@
                 })
             },
 
-            addCar(){
+            tampilPromo() {
+                var url = this.$api + '/promoByCust/' + localStorage.getItem('id_customer');
+                this.$http.get(url).then(response => {
+                    this.availablePromos = response.data.data;
+                })
+            },
+
+            addReservation(item){
                 this.formTitle = 'Tambah';
+                this.selected_index = item.id_mobil;
+                var url = this.$api + '/mobil/' + this.selected_index;
+                this.$http.get(url).then(response => {
+                    this.selected_car = response.data.data;
+                })
                 this.dialog = true;
             },
 
-            updateCar(selected){
-                if(selected.length != 0){
-                    this.formTitle = 'Ubah';
-                    this.form = {
-                        id_mobil: this.selected[0].id_mobil,
-                        id_mitra: this.selected[0].id_mitra,
-                        nama_mobil: this.selected[0].nama_mobil,
-                        tipe_mobil: this.selected[0].tipe_mobil,
-                        jenis_transmisi: this.selected[0].jenis_transmisi,
-                        jenis_bahan_bakar: this.selected[0].jenis_bahan_bakar,
-                        volume_bahan_bakar: this.selected[0].volume_bahan_bakar,
-                        warna_mobil: this.selected[0].warna_mobil,
-                        kapasitas_penumpang: this.selected[0].kapasitas_penumpang,
-                        fasilitas: this.selected[0].fasilitas,
-                        kategori_aset: this.selected[0].kategori_aset,
-                        plat_nomor: this.selected[0].plat_nomor,
-                        nomor_stnk: this.selected[0].nomor_stnk,
-                        harga_sewa: this.selected[0].harga_sewa,
-                        foto_mobil: this.selected[0].foto_mobil,
-                        total_peminjaman: this.selected[0].total_peminjaman,
-                        tanggal_terakhir_servis: this.selected[0].tanggal_terakhir_servis,
-                    },
-                    this.dialog = true;
-                    this.imageUrl = this.$baseURL+'storage/'+this.selected[0].foto_mobil;
-                }else{
-                    this.error_message = "Pilih data yang ingin diubah!";
-                    this.color = "red";
-                    this.snackbar = true;
-                    this.load = false;
-                }
-            },
-
             save() {
-                if(this.formTitle == 'Tambah'){
-                    this.car.append('id_mitra', this.form.id_mitra);
-                    this.car.append('nama_mobil', this.form.nama_mobil);
-                    this.car.append('tipe_mobil', this.form.tipe_mobil);
-                    this.car.append('jenis_transmisi', this.form.jenis_transmisi);
-                    this.car.append('jenis_bahan_bakar', this.form.jenis_bahan_bakar);
-                    this.car.append('volume_bahan_bakar', this.form.volume_bahan_bakar);
-                    this.car.append('warna_mobil', this.form.warna_mobil);
-                    this.car.append('kapasitas_penumpang', this.form.kapasitas_penumpang);
-                    this.car.append('fasilitas', this.form.fasilitas);
-                    this.car.append('kategori_aset', this.form.kategori_aset);
-                    this.car.append('plat_nomor', this.form.plat_nomor);
-                    this.car.append('nomor_stnk', this.form.nomor_stnk);
-                    this.car.append('harga_sewa', this.form.harga_sewa);
-                    var inputFoto = document.getElementById('fileFotoMobil'),
-                        dataFotoMobil = inputFoto.files[0];
-                    this.car.append('foto_mobil', dataFotoMobil);
-                    this.car.append('tanggal_terakhir_servis', this.form.tanggal_terakhir_servis);
-
-                    var url = this.$api + '/mobil'
-                    this.load = true;
-
-                    this.$http.post(url, this.car).then(response => {
-                        this.error_message = response.data.message;
-                        this.color = "green";
-                        this.snackbar = true;
-                        this.load = true;
-                        this.readData();
-                        this.cancel();
-                        
-                    }).catch(error => {
-                        this.error_message = error.response.data.message;
-                        this.color = "red";
-                        this.snackbar = true;
-                        this.load = false;
-                    });
-                }else{
-                    var newCar = new FormData;
-                    newCar.append('id_mitra', this.form.id_mitra ?? '');
-                    newCar.append('nama_mobil', this.form.nama_mobil);
-                    newCar.append('tipe_mobil', this.form.tipe_mobil);
-                    newCar.append('jenis_transmisi', this.form.jenis_transmisi);
-                    newCar.append('jenis_bahan_bakar', this.form.jenis_bahan_bakar);
-                    newCar.append('volume_bahan_bakar', this.form.volume_bahan_bakar);
-                    newCar.append('warna_mobil', this.form.warna_mobil);
-                    newCar.append('kapasitas_penumpang', this.form.kapasitas_penumpang);
-                    newCar.append('fasilitas', this.form.fasilitas);
-                    newCar.append('kategori_aset', this.form.kategori_aset);
-                    newCar.append('plat_nomor', this.form.plat_nomor);
-                    newCar.append('nomor_stnk', this.form.nomor_stnk);
-                    newCar.append('harga_sewa', this.form.harga_sewa);
-                    var inputFoto = document.getElementById('fileFotoMobil'),
-                        dataFotoMobil = inputFoto.files[0];
-                        if(dataFotoMobil){
-                            newCar.append('foto_mobil', dataFotoMobil);
-                        }
-                    newCar.append('tanggal_terakhir_servis', this.form.tanggal_terakhir_servis ?? '');
-                    newCar.append('total_peminjaman', this.form.total_peminjaman);
-
-                    var url = this.$api + '/mobil/' + this.selected[0].id_mobil;
-                    this.load = true;
-                    this.$http.post(url, newCar).then(response => {
-                        this.error_message = response.data.message;
-                        this.color = "green";
-                        this.snackbar = true;
-                        this.load = false;
-                        this.readData();
-                        this.cancel();
-                        
-                    }).catch(error => {
-                        this.error_message = error.response.data.message;
-                        console.log(this.error_message);
-                        this.color = "red";
-                        this.snackbar = true;
-                        this.load = false;
-                    });
+                this.reservation.append('id_customer', localStorage.getItem('id_customer'));
+                this.reservation.append('id_mobil', this.selected_car.id_mobil);
+                this.reservation.append('id_promo', this.form.id_promo);
+                this.reservation.append('tanggal_mulai', this.start_date);
+                this.reservation.append('tanggal_selesai', this.end_date);
+                this.reservation.append('jenis_reservasi', this.form.jenis_reservasi);
+                if(this.form.jenis_reservasi == 'Penyewaan Mobil')
+                    this.reservation.append('no_sim', this.form.no_sim);
+                else{
+                    this.reservation.append('tarif_driver', this.subTotalDriver);
                 }
+                this.reservation.append('metode_pembayaran', this.form.metode_pembayaran);
+                this.reservation.append('total_pembayaran', this.subTotalUsingPromo);
                 
-            },
+                
+                console.log(this.reservation)
 
-            cancel(){
-                this.formTitle = '';
-                this.form = {
-                    id_mobil: '',
-                    id_mitra: '',
-                    nama_mobil: '',
-                    tipe_mobil: '',
-                    jenis_transmisi: '',
-                    jenis_bahan_bakar: '',
-                    volume_bahan_bakar: '',
-                    warna_mobil: '',
-                    kapasitas_penumpang: '',
-                    fasilitas: '',
-                    kategori_aset: '',
-                    plat_nomor: '',
-                    nomor_stnk: '',
-                    harga_sewa: '',
-                    foto_mobil: '',
-                    total_peminjaman: '',
-                    tanggal_terakhir_servis: '',
-                };
-                this.selected = [];
-                this.dialog = false;
-                this.imageUrl = '';
-            },
-
-            deleteCar(selected){
-                if(selected.length != 0){   
-                    this.dialogDelete = true;
-                }else{
-                    this.error_message = "Pilih data yang ingin diubah!";
-                    this.color = "red";
-                    this.snackbar = true;
-                    this.load = false;
-                }
-            },
-
-            deleteData(){
-                var url = this.$api + '/mobil/' + this.selected[0].id_mobil;
+                var url = this.$api + '/reservasi';
                 this.load = true;
-                this.$http.delete(url).then(response => {
+
+                this.$http.post(url, this.reservation).then(response => {
                     this.error_message = response.data.message;
                     this.color = "green";
                     this.snackbar = true;
-                    this.load = false;
+                    this.load = true;
                     this.readData();
-                    this.cancelDelete();
+                    this.cancel();
                     
                 }).catch(error => {
                     this.error_message = error.response.data.message;
@@ -469,22 +300,106 @@
                     this.snackbar = true;
                     this.load = false;
                 });
+                
+                console.log(this.error_message)
             },
 
-            cancelDelete(){
-                this.selected = [];
-                this.dialogDelete = false;
+            cancel(){
+                this.formTitle = '';
+                this.form = {
+                    id_customer: '',
+                    id_mobil: '', 
+                    id_pegawai: '',
+                    id_promo: '',
+                    id_driver: '',
+                    tanggal_transaksi: '',
+                    tanggal_mulai: '',
+                    tanggal_selesai: '',
+                    jenis_reservasi: '',
+                    no_sim: '',
+                    tarif_driver: '',
+                    metode_pembayaran: '',
+                    bukti_transfer: '',
+                    total_pembayaran: '',
+                    tanggal_kembali: '',
+                    denda: '',
+                    rating_driver: '',
+                    status_reservasi: '',
+                };
+                this.selected_index = -1;
+                this.selected_car = [];
+                this.dialog = false;
+                this.start_date = null;
+                this.end_date = null;
+                this.datediff = 0;
+                this.subTotalMobil = 0;
+                this.subTotalDriver = 0;
+                this.subTotal = 0;
+                this.subTotalUsingPromo = 0;
+                this.selectedPromo = [];
+                this.imageUrl = '';
             },
 
-            getMitraList() {
-                var url = this.$api + '/mitra';
-                this.$http.get(url).then(response => {
-                    this.mitraList = response.data.data;
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-    
+            startDateChange(date){
+                this.start_date = moment(date).format('YYYY-MM-DD HH:mm:ss');
+                let end = moment(this.end_date);
+                let start = moment(this.start_date);
+                let duration = moment.duration(end.diff(start));
+                let hours = duration.asHours();
+                if(hours%24 >= 3)
+                    this.datediff = Math.round(duration.asDays())+1;
+                else
+                    this.datediff = Math.round(duration.asDays());
+            },
+
+            endDateChange(date){
+                this.end_date = moment(date).format('YYYY-MM-DD HH:mm:ss');
+                let end = moment(this.end_date);
+                let start = moment(this.start_date);
+                let duration = moment.duration(end.diff(start));
+                let hours = duration.asHours();
+                if(hours%24 >= 3)
+                    this.datediff = Math.round(duration.asDays())+1;
+                else
+                    this.datediff = Math.round(duration.asDays());
+            },
+
+            countSubtotalPeminjaman(selectObj) {
+                if(selectObj == 'Penyewaan Mobil'){
+                    this.subTotalMobil = this.countMultiplier(this.selected_car.harga_sewa);
+                    this.subTotal = this.subTotalMobil;
+                    if(this.selectedPromo.length != 0){
+                        var temp = this.subTotal;
+                        this.subTotalUsingPromo = temp*(100-this.selectedPromo.potongan_promo)/100;
+                    }
+                    else {
+                        this.subTotalUsingPromo = this.subTotal;
+                    }
+                }
+                else {
+                    this.subTotalMobil = this.countMultiplier(this.selected_car.harga_sewa);
+                    this.subTotalDriver = this.countMultiplier(50000);
+                    this.subTotal = this.subTotalMobil + this.subTotalDriver;
+                    if(this.selectedPromo.length != 0){
+                        var temp = this.subTotal;
+                        this.subTotalUsingPromo = temp*(100-this.selectedPromo.potongan_promo)/100;
+                    }
+                    else {
+                        this.subTotalUsingPromo = this.subTotal;
+                    }
+                    
+                }
+            },
+
+            countSubtotalPromo(selectObj) {
+                this.selectedPromo = this.availablePromos.find(promo => promo.id_promo === selectObj);
+                var temp = this.subTotal;
+                this.subTotalUsingPromo = temp*(100-this.selectedPromo.potongan_promo)/100;
+            },
+
+            countMultiplier: function(harga){
+                let subTotal = parseFloat(harga) * parseFloat(this.datediff);
+                return subTotal;
             },
 
             createImage(file) {
@@ -504,9 +419,10 @@
                     this.createImage(file);
             }
         },
+
         mounted() {
             this.readData();
-            this.getMitraList();
+            this.tampilPromo();
         },
     };
 </script>

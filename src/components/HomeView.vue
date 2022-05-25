@@ -71,6 +71,10 @@
           {{ new Date().getFullYear() }} — <span>Atma Jogja Rental</span>
         </v-col>
       </v-footer>
+
+      <v-snackbar v-model="snackbar_notify" top outlined color="red" timeout="2000">
+          <p class="text-center font-weight-bold">Terdapat {{totalContract}} Mobil Akan Habis Masa Kontrak!</p>
+      </v-snackbar>
   </v-main>
 </template>
 
@@ -124,14 +128,35 @@
           }
         ],
         auth:'',
+        carscontract: [],
+        snackbar_notify: false,
+        totalContract: '',
       }
     },
+    methods: {
+        readContract() {
+          var url = this.$api + '/contract';
+          this.$http.get(url).then(response => {
+            this.carscontract = response.data.data;
+            this.totalContract = this.carscontract.length;
+            
+            if(this.totalContract != 0){
+              this.snackbar_notify = true;
+            }else{
+              this.snackbar_notify = false;
+            }
+          })
+        },
+    },
     mounted(){
-		if(localStorage.getItem('auth') != null){
-			this.auth = localStorage.getItem('auth');
-		}else{
-			this.auth = '';
-		}
+      if(localStorage.getItem('auth') != null){
+        this.auth = localStorage.getItem('auth');
+        if(localStorage.getItem('role') == "Admin"){
+					this.readContract();
+				}
+      }else{
+        this.auth = '';
+      }
     }
   }
 </script>

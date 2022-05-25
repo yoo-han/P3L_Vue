@@ -8,8 +8,8 @@ import Axios from 'axios';
 Vue.config.productionTip = false;
 
 Vue.prototype.$http = Axios;
-Vue.prototype.$baseURL = 'http://192.168.155.2:8000/'
-Vue.prototype.$api = 'http://192.168.155.2:8000/api'
+Vue.prototype.$baseURL = 'http://192.168.1.5:8000/'
+Vue.prototype.$api = 'http://192.168.1.5:8000/api'
 
 new Vue({
     vuetify,

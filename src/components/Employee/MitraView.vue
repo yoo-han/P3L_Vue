@@ -14,6 +14,16 @@
                             </v-card-title>
                             <v-data-table v-model="selected" :headers="headers" :header-props="{ sortIcon: null }" :height="600" :items="mitras" item-key="id_mitra"
                                 :search="search" :single-select="true" show-select>
+                                <!-- <template v-slot:[`item.alert_kontrak`]="{ item }">
+                                    <label v-if="item.alert_kontrak != 'dekatKontrak'">
+                                    <v-icon color="green darken-4" @click="snackbar_kontrakAman=true">mdi-check-circle</v-icon>
+                                    </label>
+                                    <template v-for="items in mitrascontract">
+                                        <label :key="items" v-if="item.id_mitra == items.id_mitra" style="height: 40px;">
+                                        <v-icon color="red darken-4" @click="snackbar_kontrakHabis=true">mdi-alert</v-icon>
+                                        </label>
+                                    </template>
+                                </template> -->
                             </v-data-table>
                         </v-col>
                         <v-col cols="3" style="padding-top:80px;">
@@ -52,8 +62,8 @@
                         <v-text-field v-model="form.no_ktp_pemilik" label="No. KTP" required></v-text-field>
                         <v-text-field v-model="form.alamat_pemilik" label="Alamat" required></v-text-field>
                         <v-text-field v-model="form.no_telp_pemilik" label="No. Telepon" required></v-text-field>
-                        <v-text-field type="date" v-model="form.periode_kontrak_mulai" label="Periode Mulai Kontrak" required></v-text-field>
-                        <v-text-field type="date" v-model="form.periode_kontrak_akhir" label="Periode Akhir Kontrak" required></v-text-field>
+                        <v-text-field type="datetime-local" v-model="form.periode_kontrak_mulai" label="Periode Mulai Kontrak" required></v-text-field>
+                        <v-text-field type="datetime-local" v-model="form.periode_kontrak_akhir" label="Periode Akhir Kontrak" required></v-text-field>
                     </v-container>
                 </v-card-text>
                 <v-card-actions>
@@ -82,6 +92,14 @@
 
         <v-snackbar v-model="snackbar" :color="color" timeout="2000" bottom> {{ error_message }}</v-snackbar>
     
+        <!-- <v-snackbar v-model="snackbar_kontrakHabis" color="red" timeout="2000">
+            <p class="text-center font-weight-bold">Periode kontrak akan habis</p>
+        </v-snackbar>
+
+        <v-snackbar v-model="snackbar_kontrakAman" color="green" timeout="2000">
+            <p class="text-center font-weight-bold">Periode kontrak masih lama</p>
+        </v-snackbar> -->
+
     </v-main>
 </template>
 
@@ -126,9 +144,14 @@
                 error_message: '',
                 color: '',
                 search: null,
-                headers: [{
+                headers: [
+                    // {
+                    //     text: "Masa Kontrak",
+                    //     value: "alert_kontrak",
+                    //     align: "center",
+                    // },
+                    {
                         text: "Mitra",
-                        sortable: true,
                         value: "nama_pemilik",
                         align: "center",
                     },
@@ -160,6 +183,7 @@
                 ],
                 mitra: new FormData,
                 mitras: [],
+                mitrascontract: [],
                 singleSelect: true,
                 selected: [],
                 dialog: false,
@@ -174,6 +198,8 @@
                     periode_kontrak_akhir:'',
                 },
                 dialogDelete: false,
+                snackbar_kontrakHabis: false,
+                snackbar_kontrakAman: false,
             };
         },
         methods: {
@@ -181,6 +207,25 @@
                 var url = this.$api + '/mitra';
                 this.$http.get(url).then(response => {
                     this.mitras = response.data.data;
+                })
+                
+            },
+
+            readContract() {
+                var url = this.$api + '/contract';
+                this.$http.get(url).then(response => {
+                    this.mitrascontract = response.data.data;
+                    
+                    for(var i=0; i < this.mitrascontract.length; i++)
+                    {
+                        for(var j=0; j < this.mitras.length; j++)
+                        {
+                            if(this.mitrascontract[i].id_mitra == this.mitras[j].id_mitra)
+                            {
+                                this.mitras[j].alert_kontrak = "dekatKontrak";
+                            }
+                        }
+                    }
                 })
             },
 
@@ -318,6 +363,7 @@
         },
         mounted() {
             this.readData();
+            this.readContract();
         },
     };
 </script>
