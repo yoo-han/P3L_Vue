@@ -170,7 +170,7 @@
                                             filename="hee hee"
                                             :pdf-quality="2"
                                             :manual-pagination="false"
-                                            pdf-format="a4"
+                                            pdf-format="a5"
                                             pdf-orientation="portrait"
                                             pdf-content-width="100%"
                                     
@@ -181,28 +181,28 @@
                                         >
                                             <section slot="pdf-content">
                                                 <table style="width: 100%;">
-                                                    <td style="background-color: #FFFAE6; text-align: left; padding: 2% 5%">
-                                                        <h1 class="subTitle" style="text-align: end">Detail Transaksi</h1>
+                                                    <td style="background-color: #FFFAE6; text-align: left; padding: 10% 5%">
+                                                        <h1 class="subTitle" style="text-align: end">Nota Transaksi</h1>
                                                         <p class="subTitle" style="text-align: start; font-size:15pt;">{{ item.id_reservasi }} 
-                                                            <span class="subTitle" style="float: right; font-size:12pt;">Date: {{ item.tanggal_transaksi }}</span>
+                                                            <span class="subTitle" style="float: right; font-size:12pt;">{{ item.tanggal_transaksi }}</span>
                                                         </p>
-                                                        <v-divider></v-divider>
+                                                        <v-divider style="margin: 25px 0 25px 0"></v-divider>
                                                         <v-row style="margin: 0;">
                                                         <v-col class="text-left subTitle" style="padding-inline: 0">
                                                             <table>
                                                                 <tr style="font-size:12pt">
                                                                     <td style="font-weight:bold;">Customer</td>
-                                                                    <td class="ps-3" style="font-weight:normal;">{{ item.get_customer.nama_customer }}</td>
+                                                                    <td class="ps-3" style="padding-left:15px; font-weight:normal;">{{ item.get_customer.nama_customer }}</td>
                                                                 </tr>
                                                                 <tr style="font-size:12pt">
                                                                     <td style="font-weight:bold;">CS</td>
-                                                                    <td v-if="item.id_pegawai != null" class="ps-3" style="font-weight:normal;">{{ item.get_pegawai.nama_pegawai }}</td>
-                                                                    <td v-else class="ps-3" style="font-weight:normal;"> - </td>
+                                                                    <td v-if="item.id_pegawai != null" class="ps-3" style="padding-left:15px; font-weight:normal;">{{ item.get_pegawai.nama_pegawai }}</td>
+                                                                    <td v-else class="ps-3" style="padding-left:15px; font-weight:normal;"> - </td>
                                                                 </tr>
                                                                 <tr style="font-size:12pt">
                                                                     <td style="font-weight:bold;">Driver</td>
-                                                                    <td v-if="item.id_driver != null" class="ps-3" style="font-weight:normal;">{{ item.get_driver.nama_driver }}</td>
-                                                                    <td v-else class="ps-3" style="font-weight:normal;"> - </td>
+                                                                    <td v-if="item.id_driver != null" class="ps-3" style="padding-left:15px; font-weight:normal;">{{ item.get_driver.nama_driver }}</td>
+                                                                    <td v-else class="ps-3" style="padding-left:15px; font-weight:normal;"> - </td>
                                                                 </tr>
                                                             </table>
                                                         </v-col>
@@ -214,26 +214,26 @@
                                                             </p>
                                                         </v-col>
                                                         </v-row>
-                                                        <v-divider></v-divider>
-                                                        <v-row class="text-left subTitle" style="margin: 0; padding-inline: 0; padding-top: 12px">
+                                                        <v-divider style="margin: 25px 0 25px 0"></v-divider>
+                                                        <v-row class="text-left subTitle" style="margin: 0; padding-inline: 0; padding: 11px 0 11px 0">
                                                             <table>
                                                                 <tr style="font-size:12pt">
                                                                     <td style="font-weight:bold;">Tgl Mulai</td>
-                                                                    <td class="ps-3" style="font-weight:normal;">{{ item.tanggal_mulai }}</td>
+                                                                    <td class="ps-3" style="padding-left:15px; font-weight:normal;">{{ item.tanggal_mulai }}</td>
                                                                 </tr>
                                                                 <tr style="font-size:12pt">
                                                                     <td style="font-weight:bold;">Tgl Selesai</td>
-                                                                    <td class="ps-3" style="font-weight:normal;">{{ item.tanggal_selesai }}</td>
+                                                                    <td class="ps-3" style="padding-left:15px; font-weight:normal;">{{ item.tanggal_selesai }}</td>
                                                                 </tr>
                                                                 <tr style="font-size:12pt">
                                                                     <td style="font-weight:bold;">Tgl Pengembalian</td>
-                                                                    <td v-if="item.tanggal_kembali != null" class="ps-3" style="font-weight:normal;">{{ item.tanggal_kembali }}</td>
-                                                                    <td v-else class="ps-3" style="font-weight:normal;"> - </td>
+                                                                    <td v-if="item.tanggal_kembali != null" class="ps-3" style="padding-left:15px; font-weight:normal;">{{ item.tanggal_kembali }}</td>
+                                                                    <td v-else class="ps-3" style="padding-left:15px; font-weight:normal;"> - </td>
                                                                 </tr>
                                                             </table>
                                                         </v-row>
-                                                        <table class="subTitle responsive-table my-5 mb-5" style="font-size: 12pt;">
-                                                            <thead class="white--text" style="background-color: #251e3e;">
+                                                        <table class="subTitle responsive-table my-5 mb-5" style="font-size: 12pt; margin: 30px 0 30px 0">
+                                                            <thead class="white--text" style="background-color: #251e3e;  color: #ffffff">
                                                                 <tr>
                                                                     <th>Item</th>
                                                                     <th>Satuan</th>
@@ -257,62 +257,29 @@
                                                                 </tr>
                                                             </tbody>
                                                         </table>
-                                                        <div v-if="item.status_reservasi != 'Menunggu Konfirmasi'" class="subTitle" align="left">
-                                                            <v-divider></v-divider>
-                                                            <table v-if="item.jenis_reservasi == 'Penyewaan Mobil'" style="font-size:10pt">
-                                                                <p class="mt-5" style="font-size:12pt; margin-bottom:4px">Rating Driver:</p>
-                                                                <tr>
-                                                                    <td style="font-weight:bold;">No. SIM</td>
-                                                                    <td class="ps-10" style="font-weight:normal;">{{item.no_sim}}</td>
-                                                                </tr>
-                                                            </table>
-                                                            <table v-else style="font-size:10pt">
-                                                                <p class="mt-5" style="font-size:12pt; margin-bottom:4px">Rating Driver:</p>
-                                                                <tr>
-                                                                    <td style="font-weight:bold;">Nama Driver</td>
-                                                                    <td class="ps-10" style="font-weight:normal;">{{item.get_driver.nama_driver}}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td style="font-weight:bold;">Rating Driver</td>
-                                                                    <td class="ps-10" style="font-weight:normal;">
-                                                                        <v-rating v-model="item.rating_driver" background-color="yellow darken-3" color="yellow darken-3" dense half-increments readonly small></v-rating>
-                                                                    </td>
-                                                                    <td v-if="item.rating_driver == null" style="font-weight:normal;">( 0 )</td>
-                                                                    <td v-else style="font-weight:normal;">( {{item.rating_driver}} )</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td/>
-                                                                    <td v-if="item.status_reservasi == 'Selesai' && item.rating_driver == null" class="ps-10" style="color: #0730FF; font-weight:normal;"><button @click="dialogRating = true" text style="text-decoration: underline;">Tambah Rating</button></td>
-                                                                </tr>
-                                                                <!-- <tr>
-                                                                    <td style="font-weight:bold;">Tarif Driver</td>
-                                                                    <td class="ps-10" style="font-weight:normal;">Rp{{ item.tarif_driver }} </td>
-                                                                </tr> -->
-                                                            </table>
-                                                        </div>
-                                                        <v-divider class="my-5"></v-divider>
+                                                        <v-divider class="my-5" style="margin: 25px 0 100px 0"></v-divider>
                                                         <table class="subTitle" align="right" style="font-size:15pt">
                                                             <tr>
                                                                 <td style="font-weight:bold;">Subtotal</td>
-                                                                <td class="ps-10" style="font-weight:normal;">Rp{{subtotalSeluruh}}</td>
+                                                                <td class="ps-10" style="padding-left:15px; font-weight:normal;">Rp{{subtotalSeluruh}}</td>
                                                             </tr>
                                                             <tr>
                                                                 <td style="font-weight:bold;">Discount</td>
-                                                                <td v-if="item.get_promo !== null" class="ps-10" style="font-weight:normal;">- Rp{{potongan}}</td>
+                                                                <td v-if="item.get_promo !== null" class="ps-10" style="padding-left:15px; font-weight:normal;">- Rp{{potongan}}</td>
                                                                 <td v-else class="ps-10" style="font-weight:normal;"> - </td>
                                                             </tr>
                                                             <tr>
                                                                 <td/>
-                                                                <td v-if="item.get_promo !== null" class="ps-10" style="font-weight:normal; font-size:12pt;">( {{item.get_promo.kode_promo}} - {{item.get_promo.potongan_promo}}% )</td>
+                                                                <td v-if="item.get_promo !== null" class="ps-10" style="padding-left:15px; font-weight:normal; font-size:12pt;">( {{item.get_promo.kode_promo}} - {{item.get_promo.potongan_promo}}% )</td>
                                                             </tr>
                                                             <tr>
                                                                 <td style="font-weight:bold;">Denda</td>
-                                                                <td v-if="item.denda == null" class="ps-10" style="font-weight:normal;"> - </td>
-                                                                <td v-else class="ps-10" style="font-weight:normal;"> {{item.denda}} </td>
+                                                                <td v-if="item.denda == null" class="ps-10" style="padding-left:15px; font-weight:normal;"> - </td>
+                                                                <td v-else class="ps-10" style="padding-left:15px; font-weight:normal;"> {{item.denda}} </td>
                                                             </tr>
                                                             <tr>
                                                                 <td style="font-weight:bold;">Grand Total</td>
-                                                                <td class="ps-10" style="font-weight:normal;">Rp{{item.total_pembayaran}}</td>
+                                                                <td class="ps-10" style="padding-left:15px; font-weight:normal;">Rp{{item.total_pembayaran}}</td>
                                                             </tr>
                                                         </table>
                                                     </td>
