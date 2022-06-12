@@ -340,12 +340,8 @@
                         text: "Available"
                     },
                     {
-                        value: "Busy",
-                        text: "Busy"
-                    },
-                    {
-                        value: "Offline",
-                        text: "Offline"
+                        value: "Not Available",
+                        text: "Not Available"
                     },
                 ],
                 dialogDelete: false,

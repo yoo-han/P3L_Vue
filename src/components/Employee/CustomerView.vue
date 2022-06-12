@@ -184,6 +184,11 @@
                         align:"center",
                     },
                     {
+                        text: "Rating",
+                        value: "rating_ajr",
+                        align:"center",
+                    },
+                    {
                         text: "Status",
                         value: "status_customer",
                         align:"center",

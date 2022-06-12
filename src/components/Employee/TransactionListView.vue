@@ -70,7 +70,7 @@
                 </v-card-title>
                 <v-card-text>
                     <v-container>
-                        <v-text-field type="datetime-local" v-model="form.tanggal_kembali" label="Tanggal Penyewaan Mulai" required @change="dateChange"></v-text-field>
+                        <v-text-field type="datetime-local" v-model="form.tanggal_kembali" label="Tanggal Pengembalian" required @change="dateChange"></v-text-field>
                         <v-text-field v-model="form.denda" label="Denda" disabled required></v-text-field>
                         <v-select :items="status" v-model="form.status_reservasi" label="Status" item-value="value" item-text="text" required></v-select>
                     </v-container>
@@ -289,12 +289,44 @@
 
             konfirmasi(value){
                 if(value == 1){
-                    if(this.form.id_driver != ''){
+                    if(this.selected[0].jenis_reservasi == 'Penyewaan Mobil dan Driver'){
+                        if(this.form.id_driver != ''){
+                            let newData = {
+                                id_pegawai : localStorage.getItem('id_employee'),
+                                id_driver : this.form.id_driver,
+                                status_reservasi : 'Sudah Dikonfirmasi',
+                            };
+                            
+                            var url = this.$api + '/reservasi/' + this.selected[0].id_reservasi;
+                            this.load = true;
+                            this.$http.post(url, newData).then(response => {
+                                this.error_message = response.data.message;
+                                this.color = "green";
+                                this.snackbar = true;
+                                this.load = false;
+                                this.readData();
+                                this.cancel();
+                                
+                            }).catch(error => {
+                                this.error_message = error.response.data.message;
+                                this.color = "red";
+                                this.snackbar = true;
+                                this.load = false;
+                            });
+                        }
+                        else {
+                            this.error_message = "Pilih Driver!";
+                            this.color = "red";
+                            this.snackbar = true;
+                            this.load = false;
+                        }
+                    } 
+                    else {
                         let newData = {
                             id_pegawai : localStorage.getItem('id_employee'),
-                            id_driver : this.form.id_driver,
                             status_reservasi : 'Sudah Dikonfirmasi',
                         };
+                        
                         var url = this.$api + '/reservasi/' + this.selected[0].id_reservasi;
                         this.load = true;
                         this.$http.post(url, newData).then(response => {
@@ -311,12 +343,6 @@
                             this.snackbar = true;
                             this.load = false;
                         });
-                    }
-                    else {
-                        this.error_message = "Pilih Driver!";
-                        this.color = "red";
-                        this.snackbar = true;
-                        this.load = false;
                     }
                 } 
                 else {

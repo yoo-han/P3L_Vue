@@ -114,7 +114,7 @@
                                                 <p class="mt-5" style="font-size:12pt; margin-bottom:4px">Rating Driver:</p>
                                                 <tr>
                                                     <td style="font-weight:bold;">Nama Driver</td>
-                                                    <td class="ps-10" style="font-weight:normal;">{{item.get_driver.nama_driver}}</td>
+                                                    <td class="ps-10" style="font-weight:normal;">{{item.get_driver.nama_driver}} - ( {{item.get_driver.rerata_rating}} ) </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="font-weight:bold;">Rating Driver</td>

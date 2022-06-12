@@ -26,7 +26,7 @@
                             </v-row>
                             <v-divider></v-divider>
                             <p class="my-4" style="font-size:15pt; font-weight:normal;">Spesifikasi Kendaraan</p>
-                            <v-row align="center" class="mx-2 my-4 px-10" style="font-size:15pt; font-weight:normal">
+                            <v-row align="center" justify="center" class="mx-2 my-4 px-10" style="font-size:15pt; font-weight:normal">
                                 <div align="left">
                                     <table style="font-size:13pt">
                                         <tr>
@@ -326,6 +326,7 @@
                     rating_driver: '',
                     status_reservasi: '',
                 };
+                this.reservation = new FormData;
                 this.selected_index = -1;
                 this.selected_car = [];
                 this.dialog = false;

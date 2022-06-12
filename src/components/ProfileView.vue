@@ -21,6 +21,9 @@
                         </p>
                         <v-btn rounded class="white--text" style="background-color:#251e3e" @click="editPasswordHandler"
                             :class=" { 'white--text' : valid, disabled: !valid }">Ubah Password</v-btn>
+                        <h3 class="mt-10 newText">Rating AJR</h3>
+                        <v-rating background-color="orange lighten-3" v-model="current_rating" readonly></v-rating>
+                        <v-btn class="white--text" rounded style="background-color:#251e3e" @click="dialogRating = true">Ubah Rating</v-btn>
                     </v-col>
                     <v-col cols=7 align="start" justify="start" class="px-10">
                         <p class="newText" style="font-size:20pt; font-weight: bold">Welcome,</p>
@@ -126,6 +129,22 @@
                     <v-spacer></v-spacer>
                     <v-btn color="red darken-4" text @click="cancelPassword"> Cancel </v-btn>
                     <v-btn color="blue darken-1" text @click="updatePassword"> Save </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="dialogRating" persistent max-width="600px">
+            <v-card>
+                <v-card-title>
+                    <span class="headline">Ubah Rating AJR</span>
+                </v-card-title>
+                <v-card-text>
+                    <v-rating style="margin-top:-10px" v-model="current_rating"></v-rating>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="red darken-4" text @click="dialogRating = false"> Cancel </v-btn>
+                    <v-btn v-if="current_rating !== 0" color="blue darken-1" text @click="updateRating"> Save </v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -250,7 +269,9 @@
                     },
                 ],
                 auth:'',
-                role:''
+                role:'',
+                current_rating : 0,
+                dialogRating : false,
             }
 
         },
@@ -260,6 +281,10 @@
                     var url = this.$api + '/customer/' + localStorage.getItem('id_customer');
                     this.$http.get(url).then(response => {
                         this.user = response.data.data;
+                        if(response.data.data.rating_ajr !== null)
+                            this.current_rating = response.data.data.rating_ajr;
+                        else
+                            this.current_rating = 0;
                     })
                 }
                 else {
@@ -392,6 +417,27 @@
                     no_telp_pegawai: '',
                 };
                 this.dialogData = false;
+            },
+
+            updateRating() {
+                let newData = {
+                    rating_ajr : this.current_rating,
+                }
+                var url = this.$api + '/rating/' + localStorage.getItem("id_customer");
+                this.load = true;
+                this.$http.post(url, newData).then(response => {
+                    this.error_message = response.data.message;
+                    this.color = "green";
+                    this.snackbar = true;
+                    this.load = false;
+                    this.dialogRating = false;
+                    this.readData();
+                }).catch(error => {
+                    this.error_message = error.response.data.message;
+                    this.color = "red";
+                    this.snackbar = true;
+                    this.load = false;
+                });
             }
         },
         mounted() {

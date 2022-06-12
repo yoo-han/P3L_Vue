@@ -148,7 +148,7 @@
                     this.snackbar = true;
                     this.load = true;
                     this.resetForm();
-                    location.href="/login"
+                    setTimeout(function(){location.href="/login"},100);
                 }).catch(error => {
                     this.error_message = error.response.data.message;
                     this.color = "red";
