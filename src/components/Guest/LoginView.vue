@@ -28,7 +28,7 @@
                                         <div class="flex text-xs-center">
                                             <v-layout justify-center>
                                                 <p style="color:darkblue;" class="mt-3 mx-4">Belum punya akun?</p>
-                                                <v-btn small text outlined href="/login" style="margin-top:10px !important"><span style="font-weight:bold">Daftar</span></v-btn>
+                                                <v-btn small text outlined href="/register" style="margin-top:10px !important"><span style="font-weight:bold">Daftar</span></v-btn>
                                             </v-layout>
                                         </div>
                                     </center>
